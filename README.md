@@ -17,7 +17,7 @@
 > git clone https://github.com/MightyTea/BetterConsole.git
 
 # Features
-
+  - .NET Frameworks compatibility❌ (I'll try to fix this as soon as I can)
   - Colorate text ✔️
   - Gradients ✔️
   - Writing effects ✔️
