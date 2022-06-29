@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Company>$(Authors)</Company>
+    <Authors>MightyTea</Authors>
+    <Description>A C# Library that replace the System.Console and let you make beautiful Consoles with gradients and different utilities.</Description>
+  </PropertyGroup>
+
+</Project>
