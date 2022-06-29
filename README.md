@@ -1,7 +1,7 @@
 <h1 align="center">BetterConsole</h1>
 <br>
 >**BetterConsole** is a C# library to make beautiful console designs easily.
-><br>
+<br>
 >Inspired by **pyfade** and **Colorful.Console**,<br>
 ><br>
 >Developped by [@**MightyTea**](https://github.com/MightyTea)<br>
