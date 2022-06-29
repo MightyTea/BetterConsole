@@ -8,7 +8,7 @@
 
 <img src="https://media.discordapp.net/attachments/850275514753220658/991606094063489096/VsDebugConsole_yKHqgIuSm3.png"/> 
 
-![BetterConsole icon](https://media.discordapp.net/attachments/850275514753220658/991606671245856850/logo.png)
+![BetterConsole icon](https://media.discordapp.net/attachments/850275514753220658/991612790685057054/logo2.png)
 
 # How to Get It
 
