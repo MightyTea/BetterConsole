@@ -21,6 +21,7 @@
   - Colorate text ✔️
   - Gradients ✔️
   - Writing effects ✔️
+  - System.Console utilities ✔️
   
 <br>
 
