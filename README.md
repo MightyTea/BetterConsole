@@ -6,9 +6,9 @@
 >Developped by [@**MightyTea**](https://github.com/MightyTea)<br>
 
 
-<img src="https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3835303237353531343735333232303635382f3939313630363039343036333438393039362f56734465627567436f6e736f6c655f794b4871674975536d332e706e.png?raw=true"/> 
+<img src="https://i.imgur.com/LUqUsGJ.png"/> 
 
-![BetterConsole icon](https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3835303237353531343735333232303635382f3939313631323739303638353035373035342f6c6f676f322e706e67.png?raw=true)
+![BetterConsole icon](https://i.imgur.com/8vpnFmo.png)
 
 # How to Get It
 
@@ -26,7 +26,7 @@
 <br>
 
 ## Colorate text
-<img src="https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3838323635323338313733313530343138322f3839303137393532343435313531323333302f756e6b6e6f776e2e706e67.png?raw=true">
+<img src="https://i.imgur.com/0sJRqwg.png">
 <p><i><strong>Colorate text easily.</strong></i></p>
 <br>
 
@@ -44,7 +44,7 @@ BConsole.WriteLine("Hello World!", Color.Blue);
 <br>
 
 ## Colorate text with gradients    
-<img src="https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3835303237353531343735333232303635382f3939313631303832393035393430373932322f56734465627567436f6e736f6c655f6369616b336a585254782e706e.png?raw=true">
+<img src="https://i.imgur.com/czU41NA.png">
 <p><i><strong>Make a gradient effect.</strong></i></p>
 <br>
 
