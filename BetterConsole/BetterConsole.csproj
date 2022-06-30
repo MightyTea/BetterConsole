@@ -1,11 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Company>$(Authors)</Company>
+    <Company>MightyCorp</Company>
     <Authors>MightyTea</Authors>
-    <Description>A C# Library that replace the System.Console and let you make beautiful Consoles with gradients and different utilities.</Description>
+    <Description>A C# Library that replace the System.Console and let you make beautiful Consoles with gradients and many different utilities.</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/MightyTea/BetterConsole</RepositoryUrl>
+    <PackageTags>Console; Color; Gradient; Colorfade; CLI</PackageTags>
+    <Product>BetterConsoleSharp</Product>
+    <PackageId>BetterConsoleSharp</PackageId>
+    <Version>1.1</Version>
+    <AssemblyVersion>1.1</AssemblyVersion>
+    <FileVersion>1.1</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

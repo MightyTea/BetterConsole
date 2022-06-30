@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -10,13 +9,7 @@ namespace BetterConsole
 {
     public class BConsole
     {
-        private const string ESC = "\x1b";
-        private const string BEL = "\x07";
-        private const string SUB = "\x1a";
-        private const string DEL = "\x7f";
-        private static readonly string[] BytesMap =
-            Enumerable.Range(0, 256).Select(s => s.ToString()).ToArray();
-
+        private static ColorManager colorManager;
         public static void Delete(int amount, int duration)
         {
             for (int i = 0; i < amount; i++)
@@ -114,7 +107,7 @@ namespace BetterConsole
                         fRGB[2] = fRGB[2] + 10;
                     }
                     finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    ColorWrite(Text[i].ToString(), finalcolor);
+                    Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
                 }
             }
             catch { }
@@ -192,7 +185,7 @@ namespace BetterConsole
                         fRGB[2] = fRGB[2] + 10;
                     }
                     finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    ColorWrite(Text[i].ToString(), finalcolor);
+                    Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
                 }
                 Console.Write("\n");
             }
@@ -271,7 +264,7 @@ namespace BetterConsole
                         fRGB[2] = fRGB[2] + 10;
                     }
                     finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    ColorWrite(Text[i].ToString(), finalcolor);
+                    Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
                     Thread.Sleep(duration);
                 }
             }
@@ -350,34 +343,16 @@ namespace BetterConsole
                         fRGB[2] = fRGB[2] + 10;
                     }
                     finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    ColorWrite(Text[i].ToString(), finalcolor);
+                    Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
                     Thread.Sleep(duration);
                 }
                 Console.Write("\n");
             }
             catch { }
         }
-        private static string GetColorForegroundString(int r, int g, int b)
-        {
-            return string.Concat(ESC, "[38;2;", BytesMap[r], ";", BytesMap[g], ";", BytesMap[b], "m");
-        }
-        public static void SetColorForeground(Color color)
-        {
-            Console.Write(GetColorForegroundString(color.R, color.G, color.B));
-        }
-        public static void ColorWrite(string value, Color foreground)
-        {
-            SetColorForeground(foreground);
-            Console.Write(value);
-        }
         public static void WriteLine(string value)
         {
             Console.WriteLine(value);
-        }
-        public static void ColorWriteLine(string value, Color foreground)
-        {
-            SetColorForeground(foreground);
-            WriteLine(value);
         }
         public static void Type(string value)
         {
@@ -791,6 +766,192 @@ namespace BetterConsole
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             CancelKeyPress.Invoke(sender, e);
+        }
+
+        public static void Write(bool value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(char value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(char[] value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(decimal value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(double value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+
+        public static void Write(float value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(int value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(long value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+
+        public static void Write(object value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+        public static void Write(string value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+
+        public static void Write(uint value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+
+        public static void Write(ulong value, Color color)
+        {
+            WriteInColor(System.Console.Write, value, color);
+        }
+
+        public static void Write(string format, object arg0, Color color)
+        {
+            WriteInColor(System.Console.Write, format, arg0, color);
+        }
+        public static void Write(string format, Color color, params object[] args)
+        {
+            WriteInColor(System.Console.Write, format, args, color);
+        }
+        public static void Write(string format, object arg0, object arg1, Color color)
+        {
+            WriteInColor(System.Console.Write, format, arg0, arg1, color);
+        }
+
+        public static void Write(string format, object arg0, object arg1, object arg2, Color color)
+        {
+            WriteInColor(System.Console.Write, format, arg0, arg1, arg2, color);
+        }
+
+        public static void Write(string format, object arg0, object arg1, object arg2, object arg3, Color color)
+        {
+            WriteInColor(System.Console.Write, format, new[] { arg0, arg1, arg2, arg3 }, color);
+        }
+        public static void WriteLine(bool value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(char value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(char[] value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+        public static void WriteLine(decimal value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(double value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(float value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(int value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(long value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(object value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+        public static void WriteLine(string value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(uint value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+        public static void WriteLine(ulong value, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, value, color);
+        }
+
+        public static void WriteLine(string format, object arg0, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, format, arg0, color);
+        }
+        public static void WriteLine(string format, Color color, params object[] args)
+        {
+            WriteInColor(System.Console.WriteLine, format, args, color);
+        }
+
+
+        public static void WriteLine(string format, object arg0, object arg1, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, format, arg0, arg1, color);
+        }
+
+        public static void WriteLine(string format, object arg0, object arg1, object arg2, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, format, arg0, arg1, arg2, color);
+        }
+
+        public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
+        {
+            WriteInColor(System.Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, color);
+        }
+        private static void WriteInColor<T>(Action<T> action, T target, Color color)
+        {
+            var oldSystemColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            action.Invoke(target);
+            System.Console.ForegroundColor = oldSystemColor;
+        }
+        private static void WriteInColor<T, U>(Action<T, U> action, T target0, U target1, Color color)
+        {
+            var oldSystemColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            action.Invoke(target0, target1);
+            System.Console.ForegroundColor = oldSystemColor;
+        }
+        private static void WriteInColor<T, U>(Action<T, U, U> action, T target0, U target1, U target2, Color color)
+        {
+            var oldSystemColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            action.Invoke(target0, target1, target2);
+            System.Console.ForegroundColor = oldSystemColor;
+        }
+
+        private static void WriteInColor<T, U>(Action<T, U, U, U> action, T target0, U target1, U target2, U target3, Color color)
+        {
+            var oldSystemColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            action.Invoke(target0, target1, target2, target3);
+            System.Console.ForegroundColor = oldSystemColor;
         }
     }
 }
