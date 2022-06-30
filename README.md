@@ -17,7 +17,7 @@
 > git clone https://github.com/MightyTea/BetterConsole.git
 
 # Features
-  - .NET Frameworks compatibility❌ (I'll try to fix this as soon as I can)
+  - .NET Frameworks compatibility ✔️ It's fixed!
   - Colorate text ✔️
   - Gradients ✔️
   - Writing effects ✔️
@@ -31,7 +31,7 @@
 <br>
 
 ```c#
-BConsole.ColorWrite("Hello World!", Color.Blue);
+BConsole.WriteLine("Hello World!", Color.Blue);
 ```
 
 <br>
