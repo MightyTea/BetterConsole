@@ -6,9 +6,9 @@
 >Developped by [@**MightyTea**](https://github.com/MightyTea)<br>
 
 
-<img src="https://media.discordapp.net/attachments/850275514753220658/991606094063489096/VsDebugConsole_yKHqgIuSm3.png"/> 
+<img src="https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3835303237353531343735333232303635382f3939313630363039343036333438393039362f56734465627567436f6e736f6c655f794b4871674975536d332e706e.png?raw=true"/> 
 
-![BetterConsole icon](https://media.discordapp.net/attachments/850275514753220658/991612790685057054/logo2.png)
+![BetterConsole icon](https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3835303237353531343735333232303635382f3939313631323739303638353035373035342f6c6f676f322e706e67.png?raw=true)
 
 # How to Get It
 
@@ -26,7 +26,7 @@
 <br>
 
 ## Colorate text
-<img src="https://cdn.discordapp.com/attachments/882652381731504182/890179524451512330/unknown.png">
+<img src="https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3838323635323338313733313530343138322f3839303137393532343435313531323333302f756e6b6e6f776e2e706e67.png?raw=true">
 <p><i><strong>Colorate text easily.</strong></i></p>
 <br>
 
@@ -44,7 +44,7 @@ BConsole.WriteLine("Hello World!", Color.Blue);
 <br>
 
 ## Colorate text with gradients    
-<img src="https://media.discordapp.net/attachments/850275514753220658/991610829059407922/VsDebugConsole_ciak3jXRTx.png">
+<img src="https://github.com/MightyTea/BetterConsole/blob/main/img/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3835303237353531343735333232303635382f3939313631303832393035393430373932322f56734465627567436f6e736f6c655f6369616b336a585254782e706e.png?raw=true">
 <p><i><strong>Make a gradient effect.</strong></i></p>
 <br>
 
