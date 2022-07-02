@@ -9,19 +9,10 @@ namespace BetterConsole
     {
         private uint ColorDWORD;
 
-        internal COLORREF(Color color)
-        {
-            ColorDWORD = (uint)color.R + (((uint)color.G) << 8) + (((uint)color.B) << 16);
-        }
+        internal COLORREF(Color color) => ColorDWORD = (uint)color.R + (((uint)color.G) << 8) + (((uint)color.B) << 16);
 
-        internal COLORREF(uint r, uint g, uint b)
-        {
-            ColorDWORD = r + (g << 8) + (b << 16);
-        }
+        internal COLORREF(uint r, uint g, uint b) => ColorDWORD = r + (g << 8) + (b << 16);
 
-        public override string ToString()
-        {
-            return ColorDWORD.ToString();
-        }
+        public override string ToString() => ColorDWORD.ToString();
     }
 }

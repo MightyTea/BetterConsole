@@ -16,13 +16,10 @@ namespace BetterConsole
                 string consoleColorName = Enum.GetName(typeof(ConsoleColor), consoleColor);
                 consoleColorName = string.Equals(consoleColorName, nameof(ConsoleColor.DarkYellow), StringComparison.Ordinal) ? nameof(Color.Orange) : consoleColorName;
                 Color rgbColor = Color.FromName(consoleColorName);
-                double sum = Math.Pow(rgbColor.R - color.R, 2.0) + Math.Pow(rgbColor.G - color.G, 2.0) + Math.Pow(rgbColor.B - color.B, 2.0);
+                double sum = Math.Pow(rgbColor.R - color.R, 2.0) + Math.Pow(rgbColor.G - color.G, 2.0) + Math.Pow(rgbColor.B - color.B, 2.0), epsilon = 0.001;
 
-                double epsilon = 0.001;
                 if (sum < epsilon)
-                {
                     return consoleColor;
-                }
 
                 if (sum < delta)
                 {
