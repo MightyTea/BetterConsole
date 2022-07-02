@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Company>MightyCorp</Company>
     <Authors>MightyTea</Authors>
-    <Description>A C# Library that replace the Console and let you make beautiful Consoles with gradients and many different utilities.</Description>
+    <Description>A C# Library that replace the System.Console and let you make beautiful Consoles with gradients and many different utilities.</Description>
     <PackageProjectUrl>https://github.com/MightyTea/BetterConsole</PackageProjectUrl>
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/MightyTea/BetterConsole</RepositoryUrl>
@@ -13,8 +13,8 @@
     <Product>BetterConsoleSharp</Product>
     <PackageId>BetterConsoleSharp</PackageId>
     <Version>1.1.2</Version>
-    <AssemblyVersion>1.1</AssemblyVersion>
-    <FileVersion>1.1</FileVersion>
+    <AssemblyVersion>1.1.2</AssemblyVersion>
+    <FileVersion>1.1.2</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
