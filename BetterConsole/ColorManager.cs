@@ -12,8 +12,8 @@ namespace BetterConsole
 
         private ColorMapper colorMapper;
         private ColorStore colorStore;
-        private int colorChangeCount;
-        private int maxColorChanges;
+        private int colorChangeCount, maxColorChanges;
+
         public ColorManager(ColorStore colorStore, ColorMapper colorMapper, int maxColorChanges, int initialColorChangeCountValue, bool isInCompatibilityMode)
         {
             this.colorStore = colorStore;
@@ -23,37 +23,32 @@ namespace BetterConsole
             this.maxColorChanges = maxColorChanges;
             IsInCompatibilityMode = isInCompatibilityMode;
         }
-        public Color GetColor(ConsoleColor color)
-        {
-            return colorStore.ConsoleColors[color];
-        }
+
+        public Color GetColor(ConsoleColor color) => colorStore.ConsoleColors[color];
+
         public void ReplaceColor(Color oldColor, Color newColor)
         {
             if (IsInCompatibilityMode || !IsWindows()) return;
             ConsoleColor consoleColor = colorStore.Replace(oldColor, newColor);
             colorMapper.MapColor(consoleColor, newColor);
         }
+
         public ConsoleColor GetConsoleColor(Color color)
         {
             if (IsInCompatibilityMode)
-            {
                 return color.ToNearestConsoleColor();
-            }
 
             try
             {
 #if NETSTANDARD2_0
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
 #endif
                     return GetConsoleColorNative(color);
 
+
 #if NETSTANDARD2_0
-                }
                 else
-                {
                     return color.ToNearestConsoleColor();
-                }
 #endif
             }
             catch
@@ -88,9 +83,6 @@ namespace BetterConsole
             return colorStore.Colors.TryGetValue(color, out nativeColor) ? nativeColor : colorStore.Colors.Last().Value;
         }
 
-        private bool CanChangeColor()
-        {
-            return colorChangeCount < maxColorChanges;
-        }
+        private bool CanChangeColor() => colorChangeCount < maxColorChanges;
     }
 }

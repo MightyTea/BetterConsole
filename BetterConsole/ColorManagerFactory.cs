@@ -21,9 +21,6 @@ namespace BetterConsole
             return new ColorManager(colorStore, colorMapper, maxColorChanges, initialColorChangeCountValue, isInCompatibilityMode);
         }
 
-        private ColorMapper GetColorMapperSafe(bool isWindows)
-        {
-            return isWindows ? new ColorMapper() : null;
-        }
+        private ColorMapper GetColorMapperSafe(bool isWindows) => isWindows ? new ColorMapper() : null;
     }
 }

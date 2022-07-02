@@ -11,50 +11,30 @@ namespace BetterConsole
         [StructLayout(LayoutKind.Sequential)]
         private struct COORD
         {
-            internal short X;
-            internal short Y;
+            internal short X, Y;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct SMALL_RECT
         {
-            internal short Left;
-            internal short Top;
-            internal short Right;
-            internal short Bottom;
+            internal short Left, Top, Right, Bottom;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct CONSOLE_SCREEN_BUFFER_INFO_EX
         {
             internal int cbSize;
-            internal COORD dwSize;
-            internal COORD dwCursorPosition;
+            internal COORD dwSize, dwCursorPosition;
             internal ushort wAttributes;
             internal SMALL_RECT srWindow;
             internal COORD dwMaximumWindowSize;
             internal ushort wPopupAttributes;
             internal bool bFullscreenSupported;
-            internal COLORREF black;
-            internal COLORREF darkBlue;
-            internal COLORREF darkGreen;
-            internal COLORREF darkCyan;
-            internal COLORREF darkRed;
-            internal COLORREF darkMagenta;
-            internal COLORREF darkYellow;
-            internal COLORREF gray;
-            internal COLORREF darkGray;
-            internal COLORREF blue;
-            internal COLORREF green;
-            internal COLORREF cyan;
-            internal COLORREF red;
-            internal COLORREF magenta;
-            internal COLORREF yellow;
-            internal COLORREF white;
+            internal COLORREF black, darkBlue, darkGreen, darkCyan, darkRed, darkMagenta, darkYellow, gray, darkGray, blue, green, cyan, red, magenta, yellow, white;
         }
 
-        private const int STD_OUTPUT_HANDLE = -11;                               
-        private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);    
+        private const int STD_OUTPUT_HANDLE = -11;
+        private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetStdHandle(int nStdHandle);
@@ -64,11 +44,13 @@ namespace BetterConsole
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool SetConsoleScreenBufferInfoEx(IntPtr hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO_EX csbe);
+
         public void MapColor(ConsoleColor oldColor, Color newColor)
         {
             // NOTE: The default console colors used are gray (foreground) and black (background).
             MapColor(oldColor, newColor.R, newColor.G, newColor.B);
         }
+
         public Dictionary<string, COLORREF> GetBufferColors()
         {
             Dictionary<string, COLORREF> colors = new Dictionary<string, COLORREF>();
@@ -94,6 +76,7 @@ namespace BetterConsole
 
             return colors;
         }
+
         public void SetBatchBufferColors(Dictionary<string, COLORREF> colors)
         {
             IntPtr hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE); // 7
@@ -125,16 +108,12 @@ namespace BetterConsole
             csbe.cbSize = (int)Marshal.SizeOf(csbe); // 96 = 0x60
 
             if (hConsoleOutput == INVALID_HANDLE_VALUE)
-            {
                 throw CreateException(Marshal.GetLastWin32Error());
-            }
 
             bool brc = GetConsoleScreenBufferInfoEx(hConsoleOutput, ref csbe);
 
             if (!brc)
-            {
                 throw CreateException(Marshal.GetLastWin32Error());
-            }
 
             return csbe;
         }
@@ -206,18 +185,14 @@ namespace BetterConsole
 
             bool brc = SetConsoleScreenBufferInfoEx(hConsoleOutput, ref csbe);
             if (!brc)
-            {
                 throw CreateException(Marshal.GetLastWin32Error());
-            }
         }
 
         private Exception CreateException(int errorCode)
         {
             const int ERROR_INVALID_HANDLE = 6;
             if (errorCode == ERROR_INVALID_HANDLE)
-            {
                 return new ConsoleAccessException();
-            }
 
             return new ColorMappingException(errorCode);
         }

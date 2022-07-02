@@ -4,1124 +4,461 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace BetterConsole
 {
     public class BConsole
     {
         private static ColorManager colorManager;
-        public static int bigduration = 0;
-        public static bool cont = true;
-        static void tsk()
-        {
-            cont = true;
-            int duration = 0;
-            while(duration<bigduration)
-            {
-                duration = duration + 100;
-                Thread.Sleep(100);
-            }
-            cont = false;
-        }
-        public static void AnimateColor(string value, int velocity, int duration, Color startcolor, Color endcolor)
-        {
-            cont = true;
-            bigduration = duration;
-            int i = 0;
-            Console.SetCursorPosition(0, 0);
-            Console.CursorVisible = false;
-            WriteGradient(value, startcolor, endcolor);
-            List<int> sRGB = new List<int>();
-            List<int> eRGB = new List<int>();
-            List<int> fRGB = new List<int>();
-            sRGB.Add(startcolor.R);
-            sRGB.Add(startcolor.G);
-            sRGB.Add(startcolor.B);
-            eRGB.Add(endcolor.R);
-            eRGB.Add(endcolor.G);
-            eRGB.Add(endcolor.B);
-            Color finalcolor;
-            fRGB.Add(startcolor.R);
-            fRGB.Add(startcolor.G);
-            fRGB.Add(startcolor.B);
-            Color invertcolor;
-            try
-            {
-                Thread check = new Thread(tsk) { IsBackground = true };
-                check.Start();
-                while (true)
-                {
-                    Console.CursorVisible = false;
-                    Console.SetCursorPosition(0, 0);
-                    bool stopr = false;
-                    bool stopg = false;
-                    bool stopb = false;
-                    if (fRGB[0] < 10 || fRGB[0] > 245 && i > 2)
-                    {
-                        stopr = true;
-                    }
-                    if (fRGB[1] < 10 || fRGB[1] > 245 && i > 2)
-                    {
-                        stopg = true;
-                    }
-                    if (fRGB[2] < 10 || fRGB[2] > 245 && i > 2)
-                    {
-                        stopb = true;
-                    }
-                    if (stopr && stopg && stopb)
-                    {
-                        invertcolor = startcolor;
-                        startcolor = endcolor;
-                        endcolor = invertcolor;
-                        fRGB.Clear();
-                        fRGB.Add(startcolor.R);
-                        fRGB.Add(startcolor.G);
-                        fRGB.Add(startcolor.B);
-                        stopr = false;
-                        stopg = false;
-                        stopb = false;
-                    }
-                    if (startcolor.R > endcolor.R && !stopr)
-                    {
-                        fRGB[0] = fRGB[0] - 10;
-                    }
-                    if (startcolor.R < endcolor.R && !stopr)
-                    {
-                        fRGB[0] = fRGB[0] + 10;
-                    }
-                    if (startcolor.G > endcolor.G && !stopg)
-                    {
-                        fRGB[1] = fRGB[1] - 10;
-                    }
-                    if (startcolor.G < endcolor.G && !stopg)
-                    {
-                        fRGB[1] = fRGB[1] + 10;
-                    }
-                    if (startcolor.B > endcolor.B && !stopb)
-                    {
-                        fRGB[2] = fRGB[2] - 10;
-                    }
-                    if (startcolor.B < endcolor.B && !stopb)
-                    {
-                        fRGB[2] = fRGB[2] + 10;
-                    }
-                    finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    Console.Write(value.SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
-                    if (!cont)
-                    {
-                        break;
-                    }
-                    i++;
-                    Thread.Sleep(velocity);
-                }
-            }
-            catch { }
-        }
-        public static void Progressbar(string value, Color color)
-        {
-            int v = 0;
-            Console.Write(value.SetColor(color) + " ".SetColor(color));
-            Console.Write("                          ".SetBG(Color.FromArgb(color.R/3, color.G/3, color.B/3)));
-            Console.Write($"  {v}  / 100".SetColor(color));
-            Console.CursorVisible = false;
-            Console.SetCursorPosition(value.Length + 1, CursorTop);
-            for(int i = 0; i < 26; i++)
-            {
-                Console.Write(" ".SetBG(color));
-                Console.SetCursorPosition(CursorLeft + 25 - i + 1, CursorTop);
-                Console.Write(v.ToString().SetColor(color));
-                Console.SetCursorPosition(value.Length + 1 + i + 1, CursorTop);
-                Thread.Sleep(100);
-                v=v+4;
-            }
-            Console.SetCursorPosition(CursorLeft + 10, CursorTop);
-            CursorVisible = true;
-            Console.WriteLine();
-        }
-        public static void Delete(int amount, int duration)
-        {
-            for (int i = 0; i < amount; i++)
-            {
-                Console.Write("\b");
-                Console.Write(" ");
-                Console.Write("\b");
-                Thread.Sleep(duration);
-            }
-        }
-        public static void Delete(int amount)
-        {
-            for (int i = 0; i < amount; i++)
-            {
-                Console.Write("\b");
-                Console.Write(" ");
-                Console.Write("\b");
-                Thread.Sleep(20);
-            }
-        }
-        public static void Delete(int amount, int CursorX, int CursorY)
+
+        public static void Delete(int amount, int CursorX, int CursorY, int duration = 20)
         {
             for (int i = 0; i < amount; i++)
             {
                 Console.SetCursorPosition(CursorX, CursorY);
-                Console.Write("\b");
-                Console.Write(" ");
-                Console.Write("\b");
-                Thread.Sleep(20);
-            }
-        }
-        public static void Delete(int amount, int duration, int CursorX, int CursorY)
-        {
-            for (int i = 0; i < amount; i++)
-            {
-                Console.SetCursorPosition(CursorX, CursorY);
-                Console.Write("\b");
-                Console.Write(" ");
-                Console.Write("\b");
+                Console.Write("\b \b");
                 Thread.Sleep(duration);
             }
         }
-        public static void DeleteLine(int duration)
-        {
-            while(CursorLeft != 0)
-            {
-                Console.Write("\b");
-                Console.Write(" ");
-                Console.Write("\b");
-                Thread.Sleep(duration);
-            }
-        }
-        public static void DeleteLine()
+
+        public static void DeleteLine(int duration = 0)
         {
             while (CursorLeft != 0)
             {
-                Console.Write("\b");
-                Console.Write(" ");
-                Console.Write("\b");
+                Console.Write("\b \b");
+                if (duration > 0) Thread.Sleep(duration);
             }
         }
-        public static void Write(string value)
+
+        public static void WriteGradient(string Text, Color startcolor, Color endcolor, bool newLine = true)
         {
-            Console.Write(value);
-        }
-        public static void WriteGradient(string Text, Color startcolor, Color endcolor)
-        {
-            List<int> sRGB = new List<int>();
-            List<int> eRGB = new List<int>();
-            List<int> fRGB = new List<int>();
-            sRGB.Add(startcolor.R);
-            sRGB.Add(startcolor.G);
-            sRGB.Add(startcolor.B);
-            eRGB.Add(endcolor.R);
-            eRGB.Add(endcolor.G);
-            eRGB.Add(endcolor.B);
+            List<int> sRGB = new List<int>(), eRGB = new List<int>(), fRGB = new List<int>();
+
+            sRGB.AddRange(new List<int>() { startcolor.R, startcolor.G, startcolor.B });
+            eRGB.AddRange(new List<int>() { endcolor.R, endcolor.G, endcolor.B });
+
             Color finalcolor;
-            fRGB.Add(startcolor.R);
-            fRGB.Add(startcolor.G);
-            fRGB.Add(startcolor.B);
+
+            fRGB.AddRange(new List<int>() { startcolor.R, startcolor.G, startcolor.B });
+
             Color invertcolor;
             try
             {
                 for (int i = 0; i < Text.Length + 1; i++)
                 {
-                    bool stopr = false;
-                    bool stopg = false;
-                    bool stopb = false;
+                    bool stopr = false, stopg = false, stopb = false;
+
                     if (fRGB[0] < 10 || fRGB[0] > 245 && i > 2)
-                    {
                         stopr = true;
-                    }
+
                     if (fRGB[1] < 10 || fRGB[1] > 245 && i > 2)
-                    {
                         stopg = true;
-                    }
+
                     if (fRGB[2] < 10 || fRGB[2] > 245 && i > 2)
-                    {
                         stopb = true;
-                    }
+
                     if (stopr && stopg && stopb)
                     {
                         invertcolor = startcolor;
                         startcolor = endcolor;
                         endcolor = invertcolor;
                         fRGB.Clear();
-                        fRGB.Add(startcolor.R);
-                        fRGB.Add(startcolor.G);
-                        fRGB.Add(startcolor.B);
+                        fRGB.AddRange(new List<int>() { startcolor.R, startcolor.G, startcolor.B });
                         stopr = false;
                         stopg = false;
                         stopb = false;
                     }
+
                     if (startcolor.R > endcolor.R && !stopr)
-                    {
                         fRGB[0] = fRGB[0] - 10;
-                    }
+
                     if (startcolor.R < endcolor.R && !stopr)
-                    {
                         fRGB[0] = fRGB[0] + 10;
-                    }
+
                     if (startcolor.G > endcolor.G && !stopg)
-                    {
                         fRGB[1] = fRGB[1] - 10;
-                    }
+
                     if (startcolor.G < endcolor.G && !stopg)
-                    {
                         fRGB[1] = fRGB[1] + 10;
-                    }
+
                     if (startcolor.B > endcolor.B && !stopb)
-                    {
                         fRGB[2] = fRGB[2] - 10;
-                    }
+
                     if (startcolor.B < endcolor.B && !stopb)
-                    {
                         fRGB[2] = fRGB[2] + 10;
-                    }
+
                     finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
+
                     Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
                 }
+
+                if (newLine) Console.Write("\n");
             }
             catch { }
         }
-        public static void WriteGradientLine(string Text, Color startcolor, Color endcolor)
+
+        public static void TypeGradient(string Text, Color startcolor, Color endcolor, int duration, bool newLine = true)
         {
-            List<int> sRGB = new List<int>();
-            List<int> eRGB = new List<int>();
-            List<int> fRGB = new List<int>();
-            sRGB.Add(startcolor.R);
-            sRGB.Add(startcolor.G);
-            sRGB.Add(startcolor.B);
-            eRGB.Add(endcolor.R);
-            eRGB.Add(endcolor.G);
-            eRGB.Add(endcolor.B);
+            List<int> sRGB = new List<int>(), eRGB = new List<int>(), fRGB = new List<int>();
+
+            sRGB.AddRange(new List<int>() { startcolor.R, startcolor.G, startcolor.B });
+            eRGB.AddRange(new List<int>() { endcolor.R, endcolor.G, endcolor.B });
+
             Color finalcolor;
-            fRGB.Add(startcolor.R);
-            fRGB.Add(startcolor.G);
-            fRGB.Add(startcolor.B);
+
+            fRGB.AddRange(new List<int>() { startcolor.R, startcolor.G, startcolor.B });
+
             Color invertcolor;
+
             try
             {
                 for (int i = 0; i < Text.Length + 1; i++)
                 {
-                    bool stopr = false;
-                    bool stopg = false;
-                    bool stopb = false;
+                    bool stopr = false, stopg = false, stopb = false;
+
                     if (fRGB[0] < 10 || fRGB[0] > 245 && i > 2)
-                    {
                         stopr = true;
-                    }
+
                     if (fRGB[1] < 10 || fRGB[1] > 245 && i > 2)
-                    {
                         stopg = true;
-                    }
+
                     if (fRGB[2] < 10 || fRGB[2] > 245 && i > 2)
-                    {
                         stopb = true;
-                    }
+
                     if (stopr && stopg && stopb)
                     {
                         invertcolor = startcolor;
                         startcolor = endcolor;
                         endcolor = invertcolor;
                         fRGB.Clear();
-                        fRGB.Add(startcolor.R);
-                        fRGB.Add(startcolor.G);
-                        fRGB.Add(startcolor.B);
+                        fRGB.AddRange(new List<int>() { startcolor.R, startcolor.G, startcolor.B });
                         stopr = false;
                         stopg = false;
                         stopb = false;
                     }
+
                     if (startcolor.R > endcolor.R && !stopr)
-                    {
                         fRGB[0] = fRGB[0] - 10;
-                    }
+
                     if (startcolor.R < endcolor.R && !stopr)
-                    {
                         fRGB[0] = fRGB[0] + 10;
-                    }
+
                     if (startcolor.G > endcolor.G && !stopg)
-                    {
                         fRGB[1] = fRGB[1] - 10;
-                    }
+
                     if (startcolor.G < endcolor.G && !stopg)
-                    {
                         fRGB[1] = fRGB[1] + 10;
-                    }
+
                     if (startcolor.B > endcolor.B && !stopb)
-                    {
                         fRGB[2] = fRGB[2] - 10;
-                    }
+
                     if (startcolor.B < endcolor.B && !stopb)
-                    {
                         fRGB[2] = fRGB[2] + 10;
-                    }
+
                     finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
+
                     Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
-                }
-                Console.Write("\n");
-            }
-            catch { }
-        }
-        public static void TypeGradient(string Text, Color startcolor, Color endcolor, int duration)
-        {
-            List<int> sRGB = new List<int>();
-            List<int> eRGB = new List<int>();
-            List<int> fRGB = new List<int>();
-            sRGB.Add(startcolor.R);
-            sRGB.Add(startcolor.G);
-            sRGB.Add(startcolor.B);
-            eRGB.Add(endcolor.R);
-            eRGB.Add(endcolor.G);
-            eRGB.Add(endcolor.B);
-            Color finalcolor;
-            fRGB.Add(startcolor.R);
-            fRGB.Add(startcolor.G);
-            fRGB.Add(startcolor.B);
-            Color invertcolor;
-            try
-            {
-                for (int i = 0; i < Text.Length + 1; i++)
-                {
-                    bool stopr = false;
-                    bool stopg = false;
-                    bool stopb = false;
-                    if (fRGB[0] < 10 || fRGB[0] > 245 && i > 2)
-                    {
-                        stopr = true;
-                    }
-                    if (fRGB[1] < 10 || fRGB[1] > 245 && i > 2)
-                    {
-                        stopg = true;
-                    }
-                    if (fRGB[2] < 10 || fRGB[2] > 245 && i > 2)
-                    {
-                        stopb = true;
-                    }
-                    if (stopr && stopg && stopb)
-                    {
-                        invertcolor = startcolor;
-                        startcolor = endcolor;
-                        endcolor = invertcolor;
-                        fRGB.Clear();
-                        fRGB.Add(startcolor.R);
-                        fRGB.Add(startcolor.G);
-                        fRGB.Add(startcolor.B);
-                        stopr = false;
-                        stopg = false;
-                        stopb = false;
-                    }
-                    if (startcolor.R > endcolor.R && !stopr)
-                    {
-                        fRGB[0] = fRGB[0] - 10;
-                    }
-                    if (startcolor.R < endcolor.R && !stopr)
-                    {
-                        fRGB[0] = fRGB[0] + 10;
-                    }
-                    if (startcolor.G > endcolor.G && !stopg)
-                    {
-                        fRGB[1] = fRGB[1] - 10;
-                    }
-                    if (startcolor.G < endcolor.G && !stopg)
-                    {
-                        fRGB[1] = fRGB[1] + 10;
-                    }
-                    if (startcolor.B > endcolor.B && !stopb)
-                    {
-                        fRGB[2] = fRGB[2] - 10;
-                    }
-                    if (startcolor.B < endcolor.B && !stopb)
-                    {
-                        fRGB[2] = fRGB[2] + 10;
-                    }
-                    finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
+
                     Thread.Sleep(duration);
                 }
+
+                if (newLine) Console.Write("\n");
             }
             catch { }
         }
-        public static void TypeGradientLine(string Text, Color startcolor, Color endcolor, int duration)
-        {
-            List<int> sRGB = new List<int>();
-            List<int> eRGB = new List<int>();
-            List<int> fRGB = new List<int>();
-            sRGB.Add(startcolor.R);
-            sRGB.Add(startcolor.G);
-            sRGB.Add(startcolor.B);
-            eRGB.Add(endcolor.R);
-            eRGB.Add(endcolor.G);
-            eRGB.Add(endcolor.B);
-            Color finalcolor;
-            fRGB.Add(startcolor.R);
-            fRGB.Add(startcolor.G);
-            fRGB.Add(startcolor.B);
-            Color invertcolor;
-            try
-            {
-                for (int i = 0; i < Text.Length + 1; i++)
-                {
-                    bool stopr = false;
-                    bool stopg = false;
-                    bool stopb = false;
-                    if (fRGB[0] < 10 || fRGB[0] > 245 && i > 2)
-                    {
-                        stopr = true;
-                    }
-                    if (fRGB[1] < 10 || fRGB[1] > 245 && i > 2)
-                    {
-                        stopg = true;
-                    }
-                    if (fRGB[2] < 10 || fRGB[2] > 245 && i > 2)
-                    {
-                        stopb = true;
-                    }
-                    if (stopr && stopg && stopb)
-                    {
-                        invertcolor = startcolor;
-                        startcolor = endcolor;
-                        endcolor = invertcolor;
-                        fRGB.Clear();
-                        fRGB.Add(startcolor.R);
-                        fRGB.Add(startcolor.G);
-                        fRGB.Add(startcolor.B);
-                        stopr = false;
-                        stopg = false;
-                        stopb = false;
-                    }
-                    if (startcolor.R > endcolor.R && !stopr)
-                    {
-                        fRGB[0] = fRGB[0] - 10;
-                    }
-                    if (startcolor.R < endcolor.R && !stopr)
-                    {
-                        fRGB[0] = fRGB[0] + 10;
-                    }
-                    if (startcolor.G > endcolor.G && !stopg)
-                    {
-                        fRGB[1] = fRGB[1] - 10;
-                    }
-                    if (startcolor.G < endcolor.G && !stopg)
-                    {
-                        fRGB[1] = fRGB[1] + 10;
-                    }
-                    if (startcolor.B > endcolor.B && !stopb)
-                    {
-                        fRGB[2] = fRGB[2] - 10;
-                    }
-                    if (startcolor.B < endcolor.B && !stopb)
-                    {
-                        fRGB[2] = fRGB[2] + 10;
-                    }
-                    finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
-                    Console.Write(Text[i].ToString().SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
-                    Thread.Sleep(duration);
-                }
-                Console.Write("\n");
-            }
-            catch { }
-        }
-        public static void WriteLine(string value)
-        {
-            Console.WriteLine(value);
-        }
-        public static void Type(string value)
-        {
-            for (int i = 0; i < value.Length; i++)
-            {
-                Console.Write(value[i]);
-                Thread.Sleep(40);
-            }
-        }
-        public static void Type(string value, int duration)
+
+        public static void Type(string value, int duration = 40, bool newLine = true)
         {
             for (int i = 0; i < value.Length; i++)
             {
                 Console.Write(value[i]);
                 Thread.Sleep(duration);
             }
-        }
-        public static void TypeLine(string value)
-        {
-            for (int i = 0; i < value.Length; i++)
-            {
-                Console.Write(value[i]);
-                Thread.Sleep(40);
-            }
-            Console.Write("\n");
-        }
-        public static void TypeLine(string value, int duration)
-        {
-            for (int i = 0; i < value.Length; i++)
-            {
-                Console.Write(value[i]);
-                Thread.Sleep(duration);
-            }
-            Console.Write("\n");
-        }
-        public static int BufferHeight
-        {
-            get => System.Console.BufferHeight;
-            set => System.Console.BufferHeight = value;
-        }
-
-        public static int BufferWidth
-        {
-            get => System.Console.BufferWidth;
-            set => System.Console.BufferWidth = value;
-        }
-
-        public static bool CapsLock => System.Console.CapsLock;
-
-        public static int CursorLeft
-        {
-            get => System.Console.CursorLeft;
-            set => System.Console.CursorLeft = value;
-        }
-
-        public static int CursorSize
-        {
-            get => System.Console.CursorSize;
-            set => System.Console.CursorSize = value;
-        }
-
-        public static int CursorTop
-        {
-            get => System.Console.CursorTop;
-            set => System.Console.CursorTop = value;
-        }
-
-        public static bool CursorVisible
-        {
-            get => System.Console.CursorVisible;
-            set => System.Console.CursorVisible = value;
-        }
-
-        public static TextWriter Error => System.Console.Error;
-
-        public static TextReader In => System.Console.In;
-
-        public static Encoding InputEncoding
-        {
-            get => System.Console.InputEncoding;
-            set => System.Console.InputEncoding = value;
-        }
-
-#if !NET40
-        public static bool IsErrorRedirected => System.Console.IsErrorRedirected;
-
-        public static bool IsInputRedirected => System.Console.IsInputRedirected;
-
-        public static bool IsOutputRedirected => System.Console.IsOutputRedirected;
-#endif
-
-        public static bool KeyAvailable => System.Console.KeyAvailable;
-
-        public static int LargestWindowHeight => System.Console.LargestWindowHeight;
-
-        public static int LargestWindowWidth => System.Console.LargestWindowWidth;
-
-        public static bool NumberLock => System.Console.NumberLock;
-
-        public static TextWriter Out => System.Console.Out;
-
-        public static Encoding OutputEncoding
-        {
-            get => System.Console.OutputEncoding;
-            set => System.Console.OutputEncoding = value;
-        }
-
-        public static string Title
-        {
-            get => System.Console.Title;
-            set => System.Console.Title = value;
-        }
-
-        public static bool TreatControlCAsInput
-        {
-            get => System.Console.TreatControlCAsInput;
-            set => System.Console.TreatControlCAsInput = value;
-        }
-
-        public static int WindowHeight
-        {
-            get => System.Console.WindowHeight;
-            set => System.Console.WindowHeight = value;
-        }
-
-        public static int WindowLeft
-        {
-            get => System.Console.WindowLeft;
-            set => System.Console.WindowLeft = value;
-        }
-
-        public static int WindowTop
-        {
-            get => System.Console.WindowTop;
-            set => System.Console.WindowTop = value;
-        }
-
-        public static int WindowWidth
-        {
-            get => System.Console.WindowWidth;
-            set => System.Console.WindowWidth = value;
-        }
-
-        public static event ConsoleCancelEventHandler CancelKeyPress = delegate { };
-
-
-        public static void Write(bool value)
-        {
-            System.Console.Write(value);
-        }
-
-        public static void Write(char value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(char[] value)
-        {
-            System.Console.Write(value);
-        }
-
-        public static void Write(decimal value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(double value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(float value)
-        {
-            System.Console.Write(value);
-        }
-
-        public static void Write(int value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(long value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(object value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(uint value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(ulong value)
-        {
-            System.Console.Write(value);
-        }
-        public static void Write(string format, object arg0)
-        {
-            System.Console.Write(format, arg0);
-        }
-        public static void Write(string format, params object[] args)
-        {
-            System.Console.Write(format, args);
-        }
-        public static void Write(char[] buffer, int index, int count)
-        {
-            System.Console.Write(buffer, index, count);
-        }
-
-        public static void Write(string format, object arg0, object arg1)
-        {
-            System.Console.Write(format, arg0, arg1);
-        }
-        public static void Write(string format, object arg0, object arg1, object arg2)
-        {
-            System.Console.Write(format, arg0, arg1, arg2);
-        }
-        public static void Write(string format, object arg0, object arg1, object arg2, object arg3)
-        {
-            System.Console.Write(format, arg0, arg1, arg2, arg3);
-        }
-        public static void WriteLine()
-        {
-            System.Console.WriteLine();
-        }
-        public static void WriteLine(bool value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(char value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(char[] value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(decimal value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(double value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(float value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(int value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(long value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(object value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(uint value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(ulong value)
-        {
-            System.Console.WriteLine(value);
-        }
-        public static void WriteLine(string format, object arg0)
-        {
-            System.Console.WriteLine(format, arg0);
-        }
-        public static void WriteLine(string format, params object[] args)
-        {
-            System.Console.WriteLine(format, args);
-        }
-        public static void WriteLine(char[] buffer, int index, int count)
-        {
-            System.Console.WriteLine(buffer, index, count);
-        }
-        public static void WriteLine(string format, object arg0, object arg1)
-        {
-            System.Console.WriteLine(format, arg0, arg1);
-        }
-        public static void WriteLine(string format, object arg0, object arg1, object arg2)
-        {
-            System.Console.WriteLine(format, arg0, arg1, arg2);
-        }
-        public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3)
-        {
-            System.Console.WriteLine(format, arg0, arg1, arg2, arg3);
-        }
-        public static int Read()
-        {
-            return System.Console.Read();
-        }
-
-        public static ConsoleKeyInfo ReadKey()
-        {
-            return System.Console.ReadKey();
-        }
-
-        public static ConsoleKeyInfo ReadKey(bool intercept)
-        {
-            return System.Console.ReadKey(intercept);
-        }
-
-        public static string ReadLine()
-        {
-            return System.Console.ReadLine();
-        }
 
-        public static void ResetColor()
-        {
-            System.Console.ResetColor();
+            if (newLine) Console.Write("\n");
         }
 
-        public static void SetBufferSize(int width, int height)
-        {
-            System.Console.SetBufferSize(width, height);
-        }
-
-        public static void SetCursorPosition(int left, int top)
-        {
-            System.Console.SetCursorPosition(left, top);
-        }
-
-        public static void SetError(TextWriter newError)
-        {
-            System.Console.SetError(newError);
-        }
-
-        public static void SetIn(TextReader newIn)
-        {
-            System.Console.SetIn(newIn);
-        }
-
-        public static void SetOut(TextWriter newOut)
-        {
-            System.Console.SetOut(newOut);
-        }
-
-        public static void SetWindowPosition(int left, int top)
-        {
-            System.Console.SetWindowPosition(left, top);
-        }
-
-        public static void SetWindowSize(int width, int height)
-        {
-            System.Console.SetWindowSize(width, height);
-        }
-
-        public static Stream OpenStandardError()
-        {
-            return System.Console.OpenStandardError();
-        }
-
-#if !NETSTANDARD2_0
-        public static Stream OpenStandardError(int bufferSize)
-        {
-            return System.Console.OpenStandardError(bufferSize);
-        }
-#endif
-
-        public static Stream OpenStandardInput()
-        {
-            return System.Console.OpenStandardInput();
-        }
-
-#if !NETSTANDARD2_0
-        public static Stream OpenStandardInput(int bufferSize)
-        {
-            return System.Console.OpenStandardInput(bufferSize);
-        }
-#endif
-
-        public static Stream OpenStandardOutput()
-        {
-            return System.Console.OpenStandardOutput();
-        }
-
-#if !NETSTANDARD2_0
-        public static Stream OpenStandardOutput(int bufferSize)
-        {
-            return System.Console.OpenStandardOutput(bufferSize);
-        }
-#endif
-
-        public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight,
-            int targetLeft, int targetTop)
-        {
-            System.Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop);
-        }
-
-        public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight,
-            int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor)
-        {
-            System.Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop,
-                sourceChar, sourceForeColor, sourceBackColor);
-        }
-
-        public static void Clear()
-        {
-            System.Console.Clear();
-        }
-
-
-        public static void Beep(int frequency, int duration)
-        {
-            System.Console.Beep(frequency, duration);
-        }
-
-        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            CancelKeyPress.Invoke(sender, e);
-        }
-
-        public static void Write(bool value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(char value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(char[] value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(decimal value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(double value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-
-        public static void Write(float value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(int value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(long value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-
-        public static void Write(object value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-        public static void Write(string value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-
-        public static void Write(uint value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-
-        public static void Write(ulong value, Color color)
-        {
-            WriteInColor(System.Console.Write, value, color);
-        }
-
-        public static void Write(string format, object arg0, Color color)
-        {
-            WriteInColor(System.Console.Write, format, arg0, color);
-        }
-        public static void Write(string format, Color color, params object[] args)
-        {
-            WriteInColor(System.Console.Write, format, args, color);
-        }
-        public static void Write(string format, object arg0, object arg1, Color color)
-        {
-            WriteInColor(System.Console.Write, format, arg0, arg1, color);
-        }
-
-        public static void Write(string format, object arg0, object arg1, object arg2, Color color)
-        {
-            WriteInColor(System.Console.Write, format, arg0, arg1, arg2, color);
-        }
-
-        public static void Write(string format, object arg0, object arg1, object arg2, object arg3, Color color)
-        {
-            WriteInColor(System.Console.Write, format, new[] { arg0, arg1, arg2, arg3 }, color);
-        }
-        public static void WriteLine(bool value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(char value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(char[] value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-        public static void WriteLine(decimal value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(double value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(float value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(int value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(long value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(object value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-        public static void WriteLine(string value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(uint value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-        public static void WriteLine(ulong value, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, value, color);
-        }
-
-        public static void WriteLine(string format, object arg0, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, format, arg0, color);
-        }
-        public static void WriteLine(string format, Color color, params object[] args)
-        {
-            WriteInColor(System.Console.WriteLine, format, args, color);
-        }
-
-
-        public static void WriteLine(string format, object arg0, object arg1, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, format, arg0, arg1, color);
-        }
-
-        public static void WriteLine(string format, object arg0, object arg1, object arg2, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, format, arg0, arg1, arg2, color);
-        }
-
-        public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
-        {
-            WriteInColor(System.Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, color);
-        }
         private static void WriteInColor<T>(Action<T> action, T target, Color color)
         {
-            var oldSystemColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            var oldSystemColor = Console.ForegroundColor;
+            Console.ForegroundColor = colorManager.GetConsoleColor(color);
             action.Invoke(target);
-            System.Console.ForegroundColor = oldSystemColor;
+            Console.ForegroundColor = oldSystemColor;
         }
+
         private static void WriteInColor<T, U>(Action<T, U> action, T target0, U target1, Color color)
         {
-            var oldSystemColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            var oldSystemColor = Console.ForegroundColor;
+            Console.ForegroundColor = colorManager.GetConsoleColor(color);
             action.Invoke(target0, target1);
-            System.Console.ForegroundColor = oldSystemColor;
+            Console.ForegroundColor = oldSystemColor;
         }
+
         private static void WriteInColor<T, U>(Action<T, U, U> action, T target0, U target1, U target2, Color color)
         {
-            var oldSystemColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            var oldSystemColor = Console.ForegroundColor;
+            Console.ForegroundColor = colorManager.GetConsoleColor(color);
             action.Invoke(target0, target1, target2);
-            System.Console.ForegroundColor = oldSystemColor;
+            Console.ForegroundColor = oldSystemColor;
         }
 
         private static void WriteInColor<T, U>(Action<T, U, U, U> action, T target0, U target1, U target2, U target3, Color color)
         {
-            var oldSystemColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = colorManager.GetConsoleColor(color);
+            var oldSystemColor = Console.ForegroundColor;
+            Console.ForegroundColor = colorManager.GetConsoleColor(color);
             action.Invoke(target0, target1, target2, target3);
-            System.Console.ForegroundColor = oldSystemColor;
+            Console.ForegroundColor = oldSystemColor;
         }
+
+        #region System.Console
+
+        public static int BufferHeight { get => Console.BufferHeight; set => Console.BufferHeight = value; }
+
+        public static int BufferWidth { get => Console.BufferWidth; set => Console.BufferWidth = value; }
+
+        public static bool CapsLock => Console.CapsLock;
+
+        public static int CursorLeft { get => Console.CursorLeft; set => Console.CursorLeft = value; }
+
+        public static int CursorSize { get => Console.CursorSize; set => Console.CursorSize = value; }
+
+        public static int CursorTop { get => Console.CursorTop; set => Console.CursorTop = value; }
+
+        public static bool CursorVisible { get => Console.CursorVisible; set => Console.CursorVisible = value; }
+
+        public static TextWriter Error => Console.Error;
+
+        public static TextReader In => Console.In;
+
+        public static Encoding InputEncoding { get => Console.InputEncoding; set => Console.InputEncoding = value; }
+
+#if !NET40
+        public static bool IsErrorRedirected => Console.IsErrorRedirected;
+
+        public static bool IsInputRedirected => Console.IsInputRedirected;
+
+        public static bool IsOutputRedirected => Console.IsOutputRedirected;
+#endif
+
+        public static bool KeyAvailable => Console.KeyAvailable;
+
+        public static int LargestWindowHeight => Console.LargestWindowHeight;
+
+        public static int LargestWindowWidth => Console.LargestWindowWidth;
+
+        public static bool NumberLock => Console.NumberLock;
+
+        public static TextWriter Out => Console.Out;
+
+        public static Encoding OutputEncoding { get => Console.OutputEncoding; set => Console.OutputEncoding = value; }
+
+        public static string Title { get => Console.Title; set => Console.Title = value; }
+
+        public static bool TreatControlCAsInput { get => Console.TreatControlCAsInput; set => Console.TreatControlCAsInput = value; }
+
+        public static int WindowHeight { get => Console.WindowHeight; set => Console.WindowHeight = value; }
+
+        public static int WindowLeft { get => Console.WindowLeft; set => Console.WindowLeft = value; }
+
+        public static int WindowTop { get => Console.WindowTop; set => Console.WindowTop = value; }
+
+        public static int WindowWidth { get => Console.WindowWidth; set => Console.WindowWidth = value; }
+
+        public static event ConsoleCancelEventHandler CancelKeyPress = delegate { };
+
+        public static void Write(string value) => Console.Write(value);
+
+        public static void Write(bool value) => Console.Write(value);
+
+        public static void Write(char value) => Console.Write(value);
+
+        public static void Write(char[] value) => Console.Write(value);
+
+        public static void Write(decimal value) => Console.Write(value);
+
+        public static void Write(double value) => Console.Write(value);
+
+        public static void Write(float value) => Console.Write(value);
+
+        public static void Write(int value) => Console.Write(value);
+
+        public static void Write(long value) => Console.Write(value);
+
+        public static void Write(object value) => Console.Write(value);
+
+        public static void Write(uint value) => Console.Write(value);
+
+        public static void Write(ulong value) => Console.Write(value);
+
+        public static void Write(string format, object arg) => Console.Write(format, arg);
+
+        public static void Write(string format, params object[] args) => Console.Write(format, args);
+
+        public static void Write(char[] buffer, int index, int count) => Console.Write(buffer, index, count);
+
+        public static void Write(string format, object arg0, object arg1) => Console.Write(format, arg0, arg1);
+
+        public static void Write(string format, object arg0, object arg1, object arg2) => Console.Write(format, arg0, arg1, arg2);
+
+        public static void Write(string format, object arg0, object arg1, object arg2, object arg3) => Console.Write(format, arg0, arg1, arg2, arg3);
+
+        public static void WriteLine() => Console.WriteLine();
+
+        public static void WriteLine(string value) => Console.WriteLine(value);
+
+        public static void WriteLine(bool value) => Console.WriteLine(value);
+
+        public static void WriteLine(char value) => Console.WriteLine(value);
+
+        public static void WriteLine(char[] value) => Console.WriteLine(value);
+
+        public static void WriteLine(decimal value) => Console.WriteLine(value);
+
+        public static void WriteLine(double value) => Console.WriteLine(value);
+
+        public static void WriteLine(float value) => Console.WriteLine(value);
+
+        public static void WriteLine(int value) => Console.WriteLine(value);
+
+        public static void WriteLine(long value) => Console.WriteLine(value);
+
+        public static void WriteLine(object value) => Console.WriteLine(value);
+
+        public static void WriteLine(uint value) => Console.WriteLine(value);
+
+        public static void WriteLine(ulong value) => Console.WriteLine(value);
+
+        public static void WriteLine(string format, object arg0) => Console.WriteLine(format, arg0);
+
+        public static void WriteLine(string format, params object[] args) => Console.WriteLine(format, args);
+
+        public static void WriteLine(char[] buffer, int index, int count) => Console.WriteLine(buffer, index, count);
+
+        public static void WriteLine(string format, object arg0, object arg1) => Console.WriteLine(format, arg0, arg1);
+
+        public static void WriteLine(string format, object arg0, object arg1, object arg2) => Console.WriteLine(format, arg0, arg1, arg2);
+
+        public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3) => Console.WriteLine(format, arg0, arg1, arg2, arg3);
+
+        public static int Read() => Console.Read();
+
+        public static ConsoleKeyInfo ReadKey() => Console.ReadKey();
+
+        public static ConsoleKeyInfo ReadKey(bool intercept) => Console.ReadKey(intercept);
+
+        public static string ReadLine() => Console.ReadLine();
+
+        public static void ResetColor() => Console.ResetColor();
+
+        public static void SetBufferSize(int width, int height) => Console.SetBufferSize(width, height);
+
+        public static void SetCursorPosition(int left, int top) => Console.SetCursorPosition(left, top);
+
+        public static void SetError(TextWriter newError) => Console.SetError(newError);
+
+        public static void SetIn(TextReader newIn) => Console.SetIn(newIn);
+
+        public static void SetOut(TextWriter newOut) => Console.SetOut(newOut);
+
+        public static void SetWindowPosition(int left, int top) => Console.SetWindowPosition(left, top);
+
+        public static void SetWindowSize(int width, int height) => Console.SetWindowSize(width, height);
+
+        public static Stream OpenStandardError() => Console.OpenStandardError();
+
+#if !NETSTANDARD2_0
+        public static Stream OpenStandardError(int bufferSiz) => Console.OpenStandardError(bufferSize);
+#endif
+
+        public static Stream OpenStandardInput() => Console.OpenStandardInput();
+
+#if !NETSTANDARD2_0
+        public static Stream OpenStandardInput(int bufferSize) => Console.OpenStandardInput(bufferSize);
+#endif
+
+        public static Stream OpenStandardOutput() => Console.OpenStandardOutput();
+
+#if !NETSTANDARD2_0
+        public static Stream OpenStandardOutput(int bufferSize) => Console.OpenStandardOutput(bufferSize);
+#endif
+
+        public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop) => Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop);
+
+        public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor) => Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop, sourceChar, sourceForeColor, sourceBackColor);
+
+        public static void Clear() => Console.Clear();
+
+        public static void Beep(int frequency, int duration) => Console.Beep(frequency, duration);
+
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e) => CancelKeyPress.Invoke(sender, e);
+
+        public static void Write(bool value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(char value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(char[] value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(decimal value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(double value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(float value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(int value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(long value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(object value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(string value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(uint value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(ulong value, Color color) => WriteInColor(Console.Write, value, color);
+
+        public static void Write(string format, object arg0, Color color) => WriteInColor(Console.Write, format, arg0, color);
+
+        public static void Write(string format, Color color, params object[] args) => WriteInColor(Console.Write, format, args, color);
+
+        public static void Write(string format, object arg0, object arg1, Color color) => WriteInColor(Console.Write, format, arg0, arg1, color);
+
+        public static void Write(string format, object arg0, object arg1, object arg2, Color color) => WriteInColor(Console.Write, format, arg0, arg1, arg2, color);
+
+        public static void Write(string format, object arg0, object arg1, object arg2, object arg3, Color color) => WriteInColor(Console.Write, format, new[] { arg0, arg1, arg2, arg3 }, color);
+
+        public static void WriteLine(bool value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(char value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(char[] value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(decimal value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(double value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(float value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(int value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(long value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(object value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(string value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(uint value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(ulong value, Color color) => WriteInColor(Console.WriteLine, value, color);
+
+        public static void WriteLine(string format, object arg0, Color color) => WriteInColor(Console.WriteLine, format, arg0, color);
+
+        public static void WriteLine(string format, Color color, params object[] args) => WriteInColor(Console.WriteLine, format, args, color);
+
+        public static void WriteLine(string format, object arg0, object arg1, Color color) => WriteInColor(Console.WriteLine, format, arg0, arg1, color);
+
+        public static void WriteLine(string format, object arg0, object arg1, object arg2, Color color) => WriteInColor(Console.WriteLine, format, arg0, arg1, arg2, color);
+
+        public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color) => WriteInColor(Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, color);
+        #endregion
     }
 }

@@ -9,6 +9,7 @@ namespace BetterConsole
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Text.RegularExpressions;
+
     public static class ConsoleExtensions
     {
         private const int STD_OUTPUT_HANDLE = -11;
@@ -23,7 +24,6 @@ namespace BetterConsole
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetStdHandle(int nStdHandle);
 
-
         private static bool _enabled;
 
         private delegate string ColorFormat(string input, Color color);
@@ -35,20 +35,14 @@ namespace BetterConsole
             Background
         }
 
-        private const string _formatStringStart = "\u001b[{0};2;";
-        private const string _formatStringColor = "{1};{2};{3}m";
-        private const string _formatStringContent = "{4}";
-        private const string _formatStringEnd = "\u001b[0m";
+        private const string _formatStringStart = "\u001b[{0};2;", _formatStringColor = "{1};{2};{3}m", _formatStringContent = "{4}", _formatStringEnd = "\u001b[0m";
         private static readonly string _formatStringFull = $"{_formatStringStart}{_formatStringColor}{_formatStringContent}{_formatStringEnd}";
-
 
         private static readonly ReadOnlyDictionary<ColorPlane, string> _planeFormatModifiers = new ReadOnlyDictionary<ColorPlane, string>(new Dictionary<ColorPlane, string>
         {
             [ColorPlane.Foreground] = "38",
             [ColorPlane.Background] = "48"
         });
-
-
 
         private static readonly Regex _closeNestedPastelStringRegex1 = new Regex($"({_formatStringEnd.Replace("[", @"\[")})+", RegexOptions.Compiled);
         private static readonly Regex _closeNestedPastelStringRegex2 = new Regex($"(?<!^)(?<!{_formatStringEnd.Replace("[", @"\[")})(?<!{string.Format($"{_formatStringStart.Replace("[", @"\[")}{_formatStringColor}", new[] { $"(?:{_planeFormatModifiers[ColorPlane.Foreground]}|{_planeFormatModifiers[ColorPlane.Background]})" }.Concat(Enumerable.Repeat(@"\d{1,3}", 3)).Cast<object>().ToArray())})(?:{string.Format(_formatStringStart.Replace("[", @"\["), $"(?:{_planeFormatModifiers[ColorPlane.Foreground]}|{_planeFormatModifiers[ColorPlane.Background]})")})", RegexOptions.Compiled);
@@ -60,22 +54,13 @@ namespace BetterConsole
         });
 
 
-
         private static readonly Func<string, int> _parseHexColor = hc => int.Parse(hc.Replace("#", ""), NumberStyles.HexNumber);
 
         private static readonly Func<string, Color, ColorPlane, string> _colorFormat = (i, c, p) => string.Format(_formatStringFull, _planeFormatModifiers[p], c.R, c.G, c.B, CloseNestedPastelStrings(i, c, p));
         private static readonly Func<string, string, ColorPlane, string> _colorHexFormat = (i, c, p) => _colorFormat(i, Color.FromArgb(_parseHexColor(c)), p);
 
-        private static readonly ColorFormat _noColorOutputFormat = (i, _) => i;
-        private static readonly HexColorFormat _noHexColorOutputFormat = (i, _) => i;
-
-        private static readonly ColorFormat _foregroundColorFormat = (i, c) => _colorFormat(i, c, ColorPlane.Foreground);
-        private static readonly HexColorFormat _foregroundHexColorFormat = (i, c) => _colorHexFormat(i, c, ColorPlane.Foreground);
-
-        private static readonly ColorFormat _backgroundColorFormat = (i, c) => _colorFormat(i, c, ColorPlane.Background);
-        private static readonly HexColorFormat _backgroundHexColorFormat = (i, c) => _colorHexFormat(i, c, ColorPlane.Background);
-
-
+        private static readonly ColorFormat _noColorOutputFormat = (i, _) => i, _foregroundColorFormat = (i, c) => _colorFormat(i, c, ColorPlane.Foreground), _backgroundColorFormat = (i, c) => _colorFormat(i, c, ColorPlane.Background);
+        private static readonly HexColorFormat _noHexColorOutputFormat = (i, _) => i, _foregroundHexColorFormat = (i, c) => _colorHexFormat(i, c, ColorPlane.Foreground), _backgroundHexColorFormat = (i, c) => _colorHexFormat(i, c, ColorPlane.Background);
 
         private static readonly ReadOnlyDictionary<bool, ReadOnlyDictionary<ColorPlane, ColorFormat>> _colorFormatFuncs = new ReadOnlyDictionary<bool, ReadOnlyDictionary<ColorPlane, ColorFormat>>(new Dictionary<bool, ReadOnlyDictionary<ColorPlane, ColorFormat>>
         {
@@ -90,6 +75,7 @@ namespace BetterConsole
                 [ColorPlane.Background] = _backgroundColorFormat
             })
         });
+
         private static readonly ReadOnlyDictionary<bool, ReadOnlyDictionary<ColorPlane, HexColorFormat>> _hexColorFormatFuncs = new ReadOnlyDictionary<bool, ReadOnlyDictionary<ColorPlane, HexColorFormat>>(new Dictionary<bool, ReadOnlyDictionary<ColorPlane, HexColorFormat>>
         {
             [false] = new ReadOnlyDictionary<ColorPlane, HexColorFormat>(new Dictionary<ColorPlane, HexColorFormat>
@@ -104,54 +90,32 @@ namespace BetterConsole
             })
         });
 
-
-
-
         static ConsoleExtensions()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-                var enable = GetConsoleMode(iStdOut, out var outConsoleMode)
-                             && SetConsoleMode(iStdOut, outConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+                var enable = GetConsoleMode(iStdOut, out var outConsoleMode) && SetConsoleMode(iStdOut, outConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
             }
-
 
             if (Environment.GetEnvironmentVariable("NO_COLOR") == null)
-            {
                 Enable();
-            }
             else
-            {
                 Disable();
-            }
-        }
-        public static void Enable()
-        {
-            _enabled = true;
-        }
-        public static void Disable()
-        {
-            _enabled = false;
-        }
-        public static string SetColor(this string input, Color color)
-        {
-            return _colorFormatFuncs[_enabled][ColorPlane.Foreground](input, color);
-        }
-        public static string SetColor(this string input, string hexColor)
-        {
-            return _hexColorFormatFuncs[_enabled][ColorPlane.Foreground](input, hexColor);
-        }
-        public static string SetBG(this string input, Color color)
-        {
-            return _colorFormatFuncs[_enabled][ColorPlane.Background](input, color);
-        }
-        public static string SetBG(this string input, string hexColor)
-        {
-            return _hexColorFormatFuncs[_enabled][ColorPlane.Background](input, hexColor);
         }
 
+        public static void Enable() => _enabled = true;
+
+        public static void Disable() => _enabled = false;
+
+        public static string SetColor(this string input, Color color) => _colorFormatFuncs[_enabled][ColorPlane.Foreground](input, color);
+
+        public static string SetColor(this string input, string hexColor) => _hexColorFormatFuncs[_enabled][ColorPlane.Foreground](input, hexColor);
+
+        public static string SetBG(this string input, Color color) => _colorFormatFuncs[_enabled][ColorPlane.Background](input, color);
+
+        public static string SetBG(this string input, string hexColor) => _hexColorFormatFuncs[_enabled][ColorPlane.Background](input, hexColor);
 
 
         private static string CloseNestedPastelStrings(string input, Color color, ColorPlane colorPlane)
