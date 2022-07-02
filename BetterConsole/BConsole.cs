@@ -4,12 +4,141 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BetterConsole
 {
     public class BConsole
     {
         private static ColorManager colorManager;
+        public static int bigduration = 0;
+        public static bool cont = true;
+        static void tsk()
+        {
+            cont = true;
+            int duration = 0;
+            while(duration<bigduration)
+            {
+                duration = duration + 100;
+                Thread.Sleep(100);
+            }
+            cont = false;
+        }
+        public static void AnimateColor(string value, int velocity, int duration, Color startcolor, Color endcolor)
+        {
+            cont = true;
+            bigduration = duration;
+            int i = 0;
+            Console.SetCursorPosition(0, 0);
+            Console.CursorVisible = false;
+            WriteGradient(value, startcolor, endcolor);
+            List<int> sRGB = new List<int>();
+            List<int> eRGB = new List<int>();
+            List<int> fRGB = new List<int>();
+            sRGB.Add(startcolor.R);
+            sRGB.Add(startcolor.G);
+            sRGB.Add(startcolor.B);
+            eRGB.Add(endcolor.R);
+            eRGB.Add(endcolor.G);
+            eRGB.Add(endcolor.B);
+            Color finalcolor;
+            fRGB.Add(startcolor.R);
+            fRGB.Add(startcolor.G);
+            fRGB.Add(startcolor.B);
+            Color invertcolor;
+            try
+            {
+                Thread check = new Thread(tsk) { IsBackground = true };
+                check.Start();
+                while (true)
+                {
+                    Console.CursorVisible = false;
+                    Console.SetCursorPosition(0, 0);
+                    bool stopr = false;
+                    bool stopg = false;
+                    bool stopb = false;
+                    if (fRGB[0] < 10 || fRGB[0] > 245 && i > 2)
+                    {
+                        stopr = true;
+                    }
+                    if (fRGB[1] < 10 || fRGB[1] > 245 && i > 2)
+                    {
+                        stopg = true;
+                    }
+                    if (fRGB[2] < 10 || fRGB[2] > 245 && i > 2)
+                    {
+                        stopb = true;
+                    }
+                    if (stopr && stopg && stopb)
+                    {
+                        invertcolor = startcolor;
+                        startcolor = endcolor;
+                        endcolor = invertcolor;
+                        fRGB.Clear();
+                        fRGB.Add(startcolor.R);
+                        fRGB.Add(startcolor.G);
+                        fRGB.Add(startcolor.B);
+                        stopr = false;
+                        stopg = false;
+                        stopb = false;
+                    }
+                    if (startcolor.R > endcolor.R && !stopr)
+                    {
+                        fRGB[0] = fRGB[0] - 10;
+                    }
+                    if (startcolor.R < endcolor.R && !stopr)
+                    {
+                        fRGB[0] = fRGB[0] + 10;
+                    }
+                    if (startcolor.G > endcolor.G && !stopg)
+                    {
+                        fRGB[1] = fRGB[1] - 10;
+                    }
+                    if (startcolor.G < endcolor.G && !stopg)
+                    {
+                        fRGB[1] = fRGB[1] + 10;
+                    }
+                    if (startcolor.B > endcolor.B && !stopb)
+                    {
+                        fRGB[2] = fRGB[2] - 10;
+                    }
+                    if (startcolor.B < endcolor.B && !stopb)
+                    {
+                        fRGB[2] = fRGB[2] + 10;
+                    }
+                    finalcolor = Color.FromArgb(fRGB[0], fRGB[1], fRGB[2]);
+                    Console.Write(value.SetColor(Color.FromArgb(fRGB[0], fRGB[1], fRGB[2])));
+                    if (!cont)
+                    {
+                        break;
+                    }
+                    i++;
+                    Thread.Sleep(velocity);
+                }
+            }
+            catch { }
+        }
+        public static void Progressbar(string value, Color color)
+        {
+            int v = 0;
+            Console.Write(value.SetColor(color) + " ".SetColor(color));
+            Console.Write("                          ".SetBG(Color.FromArgb(color.R/3, color.G/3, color.B/3)));
+            Console.Write($"  {v}  / 100".SetColor(color));
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(value.Length + 1, CursorTop);
+            for(int i = 0; i < 26; i++)
+            {
+                Console.Write(" ".SetBG(color));
+                Console.SetCursorPosition(CursorLeft + 25 - i + 1, CursorTop);
+                Console.Write(v.ToString().SetColor(color));
+                Console.SetCursorPosition(value.Length + 1 + i + 1, CursorTop);
+                Thread.Sleep(100);
+                v=v+4;
+            }
+            Console.SetCursorPosition(CursorLeft + 10, CursorTop);
+            CursorVisible = true;
+            Console.WriteLine();
+        }
         public static void Delete(int amount, int duration)
         {
             for (int i = 0; i < amount; i++)
@@ -28,6 +157,47 @@ namespace BetterConsole
                 Console.Write(" ");
                 Console.Write("\b");
                 Thread.Sleep(20);
+            }
+        }
+        public static void Delete(int amount, int CursorX, int CursorY)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                Console.SetCursorPosition(CursorX, CursorY);
+                Console.Write("\b");
+                Console.Write(" ");
+                Console.Write("\b");
+                Thread.Sleep(20);
+            }
+        }
+        public static void Delete(int amount, int duration, int CursorX, int CursorY)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                Console.SetCursorPosition(CursorX, CursorY);
+                Console.Write("\b");
+                Console.Write(" ");
+                Console.Write("\b");
+                Thread.Sleep(duration);
+            }
+        }
+        public static void DeleteLine(int duration)
+        {
+            while(CursorLeft != 0)
+            {
+                Console.Write("\b");
+                Console.Write(" ");
+                Console.Write("\b");
+                Thread.Sleep(duration);
+            }
+        }
+        public static void DeleteLine()
+        {
+            while (CursorLeft != 0)
+            {
+                Console.Write("\b");
+                Console.Write(" ");
+                Console.Write("\b");
             }
         }
         public static void Write(string value)
