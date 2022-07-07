@@ -17,7 +17,8 @@
 
 # Features
   - .NET Frameworks compatibility ✔️ It's fixed!
-  - Animations ❌ (Coming on the next update!)
+  - Animations ✔️
+  - Rainbow Colors ✔️
   - Colorate text ✔️
   - Gradients ✔️
   - Writing effects ✔️
